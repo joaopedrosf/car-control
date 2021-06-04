@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.zup.carcontrol.entities.enums.DiaRodizio;
 
 @Entity
 @Table(name = "tb_car")
@@ -36,6 +36,11 @@ public class Car implements Serializable{
 	@JoinColumn(name = "user_id", nullable = false)
 	@JsonBackReference
 	private User user;
+	
+	private DiaRodizio diaRodizio;
+	
+	@Column(columnDefinition = "boolean default false")
+	private boolean isDiaRodizio;
 
 	public Car() {
 	}
@@ -86,6 +91,22 @@ public class Car implements Serializable{
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public DiaRodizio getDiaRodizio() {
+		return diaRodizio;
+	}
+
+	public void setDiaRodizio(DiaRodizio diaRodizio) {
+		this.diaRodizio = diaRodizio;
+	}
+	
+	public boolean getIsDiaRodizio() {
+		return isDiaRodizio;
+	}
+
+	public void setIsDiaRodizio(boolean isDiaRodizio) {
+		this.isDiaRodizio = isDiaRodizio;
 	}
 
 	@Override
