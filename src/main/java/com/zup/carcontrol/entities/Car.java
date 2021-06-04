@@ -28,8 +28,8 @@ public class Car implements Serializable{
 	private String ano;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User owner;
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
 	public Car() {
 	}
@@ -74,12 +74,12 @@ public class Car implements Serializable{
 		this.ano = ano;
 	}
 
-	public User getOwner() {
-		return owner;
+	public User getUser() {
+		return user;
 	}
 
-	public void setOwner(User owner) {
-		this.owner = owner;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override
