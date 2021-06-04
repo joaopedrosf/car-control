@@ -6,14 +6,20 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Proxy;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "tb_user")
+@Proxy(lazy = false)
 public class User implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -33,7 +39,8 @@ public class User implements Serializable{
 	@Column(nullable = false)
 	private String dataNascimento;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@JsonManagedReference
 	private List<Car> cars = new ArrayList<>();
 
 	public User() {
