@@ -3,13 +3,21 @@ package com.zup.carcontrol.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.zup.carcontrol.entities.Car;
+import com.zup.carcontrol.entities.DefaultFipeObject;
+import com.zup.carcontrol.entities.ModelosObject;
 import com.zup.carcontrol.entities.enums.DiaRodizio;
 import com.zup.carcontrol.repositories.CarRepository;
 
+import reactor.core.publisher.Flux;
+
 @Service
 public class CarService {
+	
+	String fipeBaseUrl = "https://parallelum.com.br/fipe/api/v1/carros";
+	WebClient webClient = WebClient.builder().baseUrl(fipeBaseUrl).build();
 
 	@Autowired
 	private CarRepository repository;
@@ -28,6 +36,8 @@ public class CarService {
 		entity.setModelo(dto.getModelo());
 		entity.setUser(dto.getUser());
 		entity.setDiaRodizio(getDiaRodizio(dto.getAno()));
+		System.out.println("Código da marca encontrada: " + getCodigoMarca(dto.getMarca()));
+		System.out.println("Código do modelo encontrado: " + getCodigoModelo(dto.getModelo()));
 		
 		return entity;
 	}
@@ -62,4 +72,43 @@ public class CarService {
 		
 		return diaRodizio;
 	}
+	
+	private String getCodigoMarca(String marca) {
+		String codigo = "";
+		
+		Flux<DefaultFipeObject> marcas = webClient.get()
+									.uri("/marcas")
+									.retrieve()
+									.bodyToFlux(DefaultFipeObject.class);
+		
+		DefaultFipeObject marcaObj = marcas.toStream()
+			.filter(m -> m.getNome().equalsIgnoreCase(marca))
+			.findFirst()
+			.orElse(null);
+		
+		codigo = marcaObj.getCodigo();
+		
+		return codigo;
+	}
+	
+	private String getCodigoModelo(String nomeModelo) {
+		
+		ModelosObject objetoModelos = webClient.get()
+												.uri("/marcas/{codigoMarca}/modelos", getCodigoMarca("Ford"))
+												.retrieve()
+												.bodyToMono(ModelosObject.class)
+												.block();
+		
+		DefaultFipeObject[] arrayModelos = objetoModelos.getModelos();
+		
+		for(DefaultFipeObject modelo: arrayModelos) {
+			if(modelo.getNome().equalsIgnoreCase(nomeModelo)) {
+				return modelo.getCodigo();
+			}
+		}
+		
+		return null;
+	}
+	
+	// Para pegar o código do modelo separar a String em duas usando split em um espaço vazio.
 }
