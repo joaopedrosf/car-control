@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.zup.carcontrol.entities.Car;
+import com.zup.carcontrol.entities.CarInfo;
 import com.zup.carcontrol.entities.DefaultFipeObject;
 import com.zup.carcontrol.entities.ModelosObject;
 import com.zup.carcontrol.entities.enums.DiaRodizio;
@@ -36,8 +37,7 @@ public class CarService {
 		entity.setModelo(dto.getModelo());
 		entity.setUser(dto.getUser());
 		entity.setDiaRodizio(getDiaRodizio(dto.getAno()));
-		System.out.println("Código da marca encontrada: " + getCodigoMarca(dto.getMarca()));
-		System.out.println("Código do modelo encontrado: " + getCodigoModelo(dto.getModelo()));
+		entity.setValor(getValorVeiculos(dto));
 		
 		return entity;
 	}
@@ -91,10 +91,10 @@ public class CarService {
 		return codigo;
 	}
 	
-	private String getCodigoModelo(String nomeModelo) {
+	private String getCodigoModelo(String codigoMarca, String nomeModelo) {
 		
 		ModelosObject objetoModelos = webClient.get()
-												.uri("/marcas/{codigoMarca}/modelos", getCodigoMarca("Ford"))
+												.uri("/marcas/{codigoMarca}/modelos", codigoMarca)
 												.retrieve()
 												.bodyToMono(ModelosObject.class)
 												.block();
@@ -110,5 +110,34 @@ public class CarService {
 		return null;
 	}
 	
-	// Para pegar o código do modelo separar a String em duas usando split em um espaço vazio.
+	private String getCodigoAno(String codigoMarca, String codigoModelo, String ano) {
+		
+		Flux<DefaultFipeObject> arrayAnos = webClient.get()
+										.uri("/marcas/{codigoMarca}/modelos/{codigoModelo}/anos", 
+											codigoMarca, codigoModelo)
+										.retrieve()
+										.bodyToFlux(DefaultFipeObject.class);
+		
+		DefaultFipeObject anoObjeto = arrayAnos.toStream()
+				 .filter(a -> a.getNome().split(" ")[0].equalsIgnoreCase(ano))
+				 .findFirst()
+				 .orElse(null);
+		
+		return anoObjeto.getCodigo();
+	}
+	
+	private String getValorVeiculos(Car dto) {
+		String codigoMarca = getCodigoMarca(dto.getMarca());
+		String codigoModelo = getCodigoModelo(codigoMarca, dto.getModelo());
+		String codigoAno = getCodigoAno(codigoMarca, codigoModelo, dto.getAno());
+		
+		CarInfo carInfo = webClient.get()
+					.uri("/marcas/{codigoMarca}/modelos/{codigoModelo}/anos/{codigoAno}", 
+							codigoMarca, codigoModelo, codigoAno)
+					.retrieve()
+					.bodyToMono(CarInfo.class)
+					.block();
+		
+		return carInfo.getValor();
+	}
 }

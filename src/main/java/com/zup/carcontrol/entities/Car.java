@@ -41,6 +41,10 @@ public class Car implements Serializable{
 	
 	@Column(columnDefinition = "boolean default false")
 	private boolean isDiaRodizio;
+	
+	private String valor;
+
+
 
 	public Car() {
 	}
@@ -107,6 +111,14 @@ public class Car implements Serializable{
 
 	public void setIsDiaRodizio(boolean isDiaRodizio) {
 		this.isDiaRodizio = isDiaRodizio;
+	}
+	
+	public String getValor() {
+		return valor;
+	}
+
+	public void setValor(String valor) {
+		this.valor = valor;
 	}
 
 	@Override
