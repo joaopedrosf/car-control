@@ -1,9 +1,7 @@
 package com.zup.carcontrol.services;
 
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +29,17 @@ public class UserService {
 		return entity;
 	}
 	
-	@Transactional(readOnly = true)
+	@Transactional
 	public User getUserById(Long id) {
 		User user = repository.getOne(id);
 		List<Car> carList = user.getCars();
+		updateCarRotation(carList);
 		
+		return user;
+	}
+	
+	@Transactional
+	public void updateCarRotation(List<Car> carList) {
 		for (Car car: carList) {
 			Car entity = carRepository.getOne(car.getId());
 			DayOfWeek dayOfWeek = DayOfWeek.from(LocalDate.now());
@@ -44,9 +48,11 @@ public class UserService {
 			if(dayOfWeek.getValue() == (entity.getDiaRodizio().ordinal() + 1)) { 
 				entity.setIsDiaRodizio(true);
 				carRepository.save(entity);
+				continue;
 			}
+			
+			entity.setIsDiaRodizio(false);
+			carRepository.save(entity);
 		}
-		
-		return user;
 	}
 }

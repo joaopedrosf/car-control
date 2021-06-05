@@ -27,9 +27,14 @@ public class CarService {
 		entity.setMarca(dto.getMarca());
 		entity.setModelo(dto.getModelo());
 		entity.setUser(dto.getUser());
+		entity.setDiaRodizio(getDiaRodizio(dto.getAno()));
 		
+		return entity;
+	}
+	
+	private DiaRodizio getDiaRodizio(String ano) {
 		DiaRodizio diaRodizio = null;
-		Integer anoInteiro = Integer.valueOf(dto.getAno().split("-")[0]);
+		Integer anoInteiro = Integer.valueOf(ano);
 		int ultimoDigito = anoInteiro % 10;
 		
 		switch(ultimoDigito) {
@@ -55,8 +60,6 @@ public class CarService {
 			break;
 		}
 		
-		entity.setDiaRodizio(diaRodizio);
-		
-		return entity;
+		return diaRodizio;
 	}
 }
