@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zup.carcontrol.entities.Car;
+import com.zup.carcontrol.dto.CarDto;
+import com.zup.carcontrol.dto.CarInsertDto;
 import com.zup.carcontrol.services.CarService;
 
 @RestController
@@ -18,9 +19,8 @@ public class CarController {
 	private CarService service;
 	
 	@PostMapping
-	public ResponseEntity<Car> register(@RequestBody Car insertCar) {
-		Car car = new Car();
-		car = service.insert(insertCar);
-		return ResponseEntity.ok().body(car);
+	public ResponseEntity<CarDto> register(@RequestBody CarInsertDto carInsertDto) {
+		CarDto responseDto = service.insert(carInsertDto);
+		return ResponseEntity.ok().body(responseDto);
 	}
 }

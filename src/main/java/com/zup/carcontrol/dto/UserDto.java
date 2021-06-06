@@ -20,12 +20,12 @@ public class UserDto implements Serializable{
 	
 	private String dataNascimento;
 	
-	private List<Car> cars = new ArrayList<>();
+	private List<CarDto> cars = new ArrayList<>();
 
 	public UserDto() {
 	}
 
-	public UserDto(Long id, String nome, String email, String cpf, String dataNascimento, List<Car> cars) {
+	public UserDto(Long id, String nome, String email, String cpf, String dataNascimento, List<CarDto> cars) {
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
@@ -40,7 +40,17 @@ public class UserDto implements Serializable{
 		this.email = user.getEmail();
 		this.cpf = user.getCpf();
 		this.dataNascimento = user.getDataNascimento();
-		this.cars = user.getCars();
+		this.cars = carEntityToDto(user.getCars());
+	}
+	
+	private List<CarDto> carEntityToDto (List<Car> carList) {
+		List<CarDto> carDtoList = new ArrayList<>(); 
+		
+		for(Car car: carList) {
+			carDtoList.add(new CarDto(car));
+		}
+		
+		return carDtoList;
 	}
 
 	public Long getId() {
@@ -83,11 +93,11 @@ public class UserDto implements Serializable{
 		this.dataNascimento = dataNascimento;
 	}
 
-	public List<Car> getCars() {
+	public List<CarDto> getCars() {
 		return cars;
 	}
 
-	public void setCars(List<Car> cars) {
+	public void setCars(List<CarDto> cars) {
 		this.cars = cars;
 	}
 	

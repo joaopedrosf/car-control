@@ -1,10 +1,15 @@
 package com.zup.carcontrol.services;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.zup.carcontrol.dto.CarDto;
+import com.zup.carcontrol.dto.CarInsertDto;
 import com.zup.carcontrol.entities.Car;
 import com.zup.carcontrol.entities.CarInfo;
 import com.zup.carcontrol.entities.DefaultFipeObject;
@@ -24,20 +29,23 @@ public class CarService {
 	private CarRepository repository;
 	
 	@Transactional
-	public Car insert(Car car) {
+	public CarDto insert(CarInsertDto dto) {
 		Car entity = new Car();
-		entity = fillEntity(entity, car);
+		entity = fillEntity(entity, dto);
 		entity = repository.save(entity);
-		return entity;
+		
+		CarDto responseDto = new CarDto(entity);
+		return responseDto;
 	}
 	
-	private Car fillEntity(Car entity, Car dto) {
+	private Car fillEntity(Car entity, CarInsertDto dto) {
 		entity.setAno(dto.getAno());
 		entity.setMarca(dto.getMarca());
 		entity.setModelo(dto.getModelo());
 		entity.setUser(dto.getUser());
 		entity.setDiaRodizio(getDiaRodizio(dto.getAno()));
-		entity.setValor(getValorVeiculos(dto));
+		entity.setIsDiaRodizio(isDiaRodizio(getDiaRodizio(dto.getAno())));
+		entity.setValor(getValorVeiculo(dto));
 		
 		return entity;
 	}
@@ -71,6 +79,17 @@ public class CarService {
 		}
 		
 		return diaRodizio;
+	}
+	
+	public boolean isDiaRodizio(DiaRodizio diaRodizio) {
+		DayOfWeek dayOfWeek = DayOfWeek.from(LocalDate.now());
+			
+		// Se o dia da semana de hoje é o mesmo dia da semana do rodízio
+		if(dayOfWeek.getValue() == (diaRodizio.ordinal() + 1)) { 
+			return true;
+		}
+			
+		return false;
 	}
 	
 	private String getCodigoMarca(String marca) {
@@ -126,7 +145,7 @@ public class CarService {
 		return anoObjeto.getCodigo();
 	}
 	
-	private String getValorVeiculos(Car dto) {
+	private String getValorVeiculo(CarInsertDto dto) {
 		String codigoMarca = getCodigoMarca(dto.getMarca());
 		String codigoModelo = getCodigoModelo(codigoMarca, dto.getModelo());
 		String codigoAno = getCodigoAno(codigoMarca, codigoModelo, dto.getAno());
