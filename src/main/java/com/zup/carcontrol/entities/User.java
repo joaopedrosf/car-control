@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Proxy;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.zup.carcontrol.dto.UserInsertDto;
 
 @Entity
 @Table(name = "tb_user")
@@ -52,6 +53,13 @@ public class User implements Serializable{
 		this.email = email;
 		this.cpf = cpf;
 		this.dataNascimento = dataNascimento;
+	}
+	
+	public User(UserInsertDto dto) {
+		this.nome = dto.getNome();
+		this.email = dto.getEmail();
+		this.cpf = dto.getCpf();
+		this.dataNascimento = dto.getDataNascimento();
 	}
 
 	public Long getId() {

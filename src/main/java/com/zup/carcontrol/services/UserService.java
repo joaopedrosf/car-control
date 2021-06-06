@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zup.carcontrol.dto.UserDto;
+import com.zup.carcontrol.dto.UserInsertDto;
 import com.zup.carcontrol.entities.Car;
 import com.zup.carcontrol.entities.User;
 import com.zup.carcontrol.repositories.CarRepository;
@@ -23,19 +25,22 @@ public class UserService {
 	private CarRepository carRepository;
 	
 	@Transactional
-	public User insert(User user) {
-		User entity = new User();
-		entity = repository.save(user);
-		return entity;
+	public UserDto insert(UserInsertDto dto) {
+		User entity = new User(dto);
+		entity = repository.save(entity);
+		
+		UserDto responseDto = new UserDto(entity);
+		return responseDto;
 	}
 	
 	@Transactional
-	public User getUserById(Long id) {
+	public UserDto getUserById(Long id) {
 		User user = repository.getOne(id);
 		List<Car> carList = user.getCars();
 		updateCarRotation(carList);
 		
-		return user;
+		UserDto dto = new UserDto(user);
+		return dto;
 	}
 	
 	@Transactional
