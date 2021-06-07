@@ -1,4 +1,4 @@
-package com.zup.carcontrol.entities;
+package com.zup.carcontrol.classes;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

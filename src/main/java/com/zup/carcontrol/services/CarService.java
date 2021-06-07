@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.zup.carcontrol.classes.CarInfo;
+import com.zup.carcontrol.classes.DefaultFipeObject;
+import com.zup.carcontrol.classes.ModelosObject;
 import com.zup.carcontrol.dto.CarDto;
 import com.zup.carcontrol.dto.CarInsertDto;
 import com.zup.carcontrol.entities.Car;
-import com.zup.carcontrol.entities.CarInfo;
-import com.zup.carcontrol.entities.DefaultFipeObject;
-import com.zup.carcontrol.entities.ModelosObject;
 import com.zup.carcontrol.entities.enums.DiaRodizio;
 import com.zup.carcontrol.repositories.CarRepository;
 

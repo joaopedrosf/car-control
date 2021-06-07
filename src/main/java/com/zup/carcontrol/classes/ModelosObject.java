@@ -1,4 +1,4 @@
-package com.zup.carcontrol.entities;
+package com.zup.carcontrol.classes;
 
 public class ModelosObject {
 
