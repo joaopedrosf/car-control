@@ -3,6 +3,7 @@ package com.zup.carcontrol.services;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import com.zup.carcontrol.entities.Car;
 import com.zup.carcontrol.entities.User;
 import com.zup.carcontrol.repositories.CarRepository;
 import com.zup.carcontrol.repositories.UserRepository;
+import com.zup.carcontrol.services.exceptions.EntityNotFoundException;
 
 @Service
 public class UserService {
@@ -35,7 +37,9 @@ public class UserService {
 	
 	@Transactional
 	public UserDto getUserById(Long id) {
-		User user = repository.getOne(id);
+		Optional<User> userObj = repository.findById(id);
+		User user = userObj.orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+		
 		List<Car> carList = user.getCars();
 		updateCarRotation(carList);
 		

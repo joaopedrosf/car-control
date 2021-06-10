@@ -16,6 +16,7 @@ import com.zup.carcontrol.dto.CarInsertDto;
 import com.zup.carcontrol.entities.Car;
 import com.zup.carcontrol.entities.enums.DiaRodizio;
 import com.zup.carcontrol.repositories.CarRepository;
+import com.zup.carcontrol.services.exceptions.CodigoNotFoundException;
 
 import reactor.core.publisher.Flux;
 
@@ -38,18 +39,20 @@ public class CarService {
 		return responseDto;
 	}
 	
+	@Transactional
 	private Car fillEntity(Car entity, CarInsertDto dto) {
 		entity.setAno(dto.getAno());
 		entity.setMarca(dto.getMarca());
 		entity.setModelo(dto.getModelo());
 		entity.setUser(dto.getUser());
+		entity.setValor(getValorVeiculo(dto));
 		entity.setDiaRodizio(getDiaRodizio(dto.getAno()));
 		entity.setIsDiaRodizio(isDiaRodizio(getDiaRodizio(dto.getAno())));
-		entity.setValor(getValorVeiculo(dto));
 		
 		return entity;
 	}
 	
+	// Erro está aqui, porque o ano passado é nulo.
 	private DiaRodizio getDiaRodizio(String ano) {
 		DiaRodizio diaRodizio = null;
 		Integer anoInteiro = Integer.valueOf(ano);
@@ -103,7 +106,7 @@ public class CarService {
 		DefaultFipeObject marcaObj = marcas.toStream()
 			.filter(m -> m.getNome().equalsIgnoreCase(marca))
 			.findFirst()
-			.orElse(null);
+			.orElseThrow(() -> new CodigoNotFoundException("Marca não encontrada"));
 		
 		codigo = marcaObj.getCodigo();
 		
@@ -126,7 +129,7 @@ public class CarService {
 			}
 		}
 		
-		return null;
+		throw new CodigoNotFoundException("Modelo não encontrado");
 	}
 	
 	private String getCodigoAno(String codigoMarca, String codigoModelo, String ano) {
@@ -140,7 +143,7 @@ public class CarService {
 		DefaultFipeObject anoObjeto = arrayAnos.toStream()
 				 .filter(a -> a.getNome().split(" ")[0].equalsIgnoreCase(ano))
 				 .findFirst()
-				 .orElse(null);
+				 .orElseThrow(() -> new CodigoNotFoundException("Ano não encontrado"));
 		
 		return anoObjeto.getCodigo();
 	}
