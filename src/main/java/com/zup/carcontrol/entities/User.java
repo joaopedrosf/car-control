@@ -13,14 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Proxy;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zup.carcontrol.dto.UserInsertDto;
 
 @Entity
 @Table(name = "tb_user")
-@Proxy(lazy = false)
 public class User implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

@@ -39,12 +39,9 @@ public class Car implements Serializable{
 	
 	private DiaRodizio diaRodizio;
 	
-	@Column(columnDefinition = "boolean default false")
 	private boolean isDiaRodizio;
 	
 	private String valor;
-
-
 
 	public Car() {
 	}

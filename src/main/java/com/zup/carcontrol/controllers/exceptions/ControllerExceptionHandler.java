@@ -5,6 +5,7 @@ import java.time.Instant;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.PropertyValueException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -53,5 +54,18 @@ public class ControllerExceptionHandler {
 		err.setPath(req.getRequestURI());
 		
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+	}
+	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<StandardError> dataErrorOnBodyRequest(DataIntegrityViolationException e, HttpServletRequest req){
+		StandardError err = new StandardError();
+		
+		err.setTimestamp(Instant.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
+		err.setError("Erro nos dados do corpo da requisição");
+		err.setMessage("O preenchimento do corpo da requisição foi feito com dados inválidos ou inexistentes");
+		err.setPath(req.getRequestURI());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err); 
 	}
 }

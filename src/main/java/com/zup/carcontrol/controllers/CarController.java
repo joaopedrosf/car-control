@@ -21,6 +21,6 @@ public class CarController {
 	@PostMapping
 	public ResponseEntity<CarDto> register(@RequestBody CarInsertDto carInsertDto) {
 		CarDto responseDto = service.insert(carInsertDto);
-		return ResponseEntity.ok().body(responseDto);
+		return ResponseEntity.status(201).body(responseDto);
 	}
 }

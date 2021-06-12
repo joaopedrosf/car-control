@@ -52,7 +52,6 @@ public class CarService {
 		return entity;
 	}
 	
-	// Erro está aqui, porque o ano passado é nulo.
 	private DiaRodizio getDiaRodizio(String ano) {
 		DiaRodizio diaRodizio = null;
 		Integer anoInteiro = Integer.valueOf(ano);
