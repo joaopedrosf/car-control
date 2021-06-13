@@ -4,10 +4,10 @@ import java.time.Instant;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.hibernate.PropertyValueException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -30,8 +30,8 @@ public class ControllerExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
 	}
 	
-	@ExceptionHandler(PropertyValueException.class)
-	public ResponseEntity<StandardError> propertyValue(PropertyValueException e, HttpServletRequest req) {
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<StandardError> propertyValue(MethodArgumentNotValidException e, HttpServletRequest req) {
 		StandardError err = new StandardError();
 		
 		err.setTimestamp(Instant.now());

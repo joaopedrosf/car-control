@@ -2,17 +2,24 @@ package com.zup.carcontrol.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import com.zup.carcontrol.entities.User;
 
 public class CarInsertDto implements Serializable{
 	private static final long serialVersionUID = 1L;
 
+	@NotBlank
 	private String marca;
 	
+	@NotBlank
 	private String modelo;
 	
+	@NotBlank
 	private String ano;
 	
+	@NotNull
 	private User user;
 
 	public CarInsertDto() {

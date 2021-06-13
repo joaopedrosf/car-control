@@ -1,5 +1,7 @@
 package com.zup.carcontrol.controllers;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +23,7 @@ public class UserController {
 	private UserService service;
 	
 	@PostMapping
-	public ResponseEntity<UserDto> register(@RequestBody UserInsertDto insertUser) {
+	public ResponseEntity<UserDto> register(@RequestBody @Valid UserInsertDto insertUser) {
 		UserDto user = service.insert(insertUser);
 		return ResponseEntity.status(201).body(user);
 	}
